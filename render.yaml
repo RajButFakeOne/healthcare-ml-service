@@ -1,0 +1,21 @@
+# Render Blueprint: push this folder to GitHub, then Render > New > Blueprint.
+services:
+  - type: web
+    name: healthcare-ml
+    runtime: docker
+    plan: starter            # $7/mo, always on. 'free' sleeps after 15 min idle (see README).
+    region: singapore        # closest Render region to Bangladesh
+    healthCheckPath: /health
+    autoDeploy: true
+    numInstances: 1          # must stay 1: model state lives in memory
+    envVars:
+      - key: WEBHOOK_SECRET
+        generateValue: true  # Render creates it; copy it into Supabase Vault (see supabase/ml_webhook.sql)
+      - key: SUPABASE_URL
+        value: https://msnpzzbnllfldlaisdbj.supabase.co
+      - key: SUPABASE_SERVICE_KEY
+        sync: false          # you paste this in the dashboard; never commit it
+      - key: REAL_SAMPLE_WEIGHT
+        value: "3.0"
+      - key: RECONCILE_MINUTES
+        value: "10"
